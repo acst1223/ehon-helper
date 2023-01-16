@@ -53,29 +53,26 @@ function draw(x, y) {
   ctx.stroke();
 }
 
-cnvs.addEventListener("touchstart", function (e) {
-  e.preventDefault();
-});
-cnvs.addEventListener("touchmove", function (e) {
-  e.preventDefault();
-});
-cnvs.addEventListener("touchend", function (e) {
-  e.preventDefault();
-});
-cnvs.addEventListener("touchcancel", function (e) {
-  e.preventDefault();
-});
-cnvs.addEventListener("mousedown", (e) => {
-  clickFlg = MOUSE_DOWN;
-});
-cnvs.addEventListener("mouseup", (e) => {
-  clickFlg = MOUSE_UP;
-});
-cnvs.addEventListener("mousemove", (e) => {
-  if (clickFlg) {
-    draw(e.offsetX, e.offsetY);
-  }
-});
+for (const ev of ["mousedown", "touchstart"]) {
+  cnvs.addEventListener(ev, (e) => {
+    e.preventDefault();
+    clickFlg = MOUSE_DOWN;
+  });
+}
+for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
+  cnvs.addEventListener(ev, (e) => {
+    e.preventDefault();
+    clickFlg = MOUSE_UP;
+  });
+}
+for (const ev of ["mousemove", "touchmove"]) {
+  cnvs.addEventListener(ev, (e) => {
+    e.preventDefault();
+    if (clickFlg) {
+      draw(e.offsetX, e.offsetY);
+    }
+  });
+}
 
 clearHint.addEventListener("click", (e) => {
   ctx.clearRect(0, 0, cnvWidth, cnvHeight);
