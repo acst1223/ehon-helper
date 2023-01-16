@@ -9,9 +9,11 @@
 
 html {
   scroll-behavior: smooth;
+  overscroll-behavior: none;
 }
 
 body {
+  overscroll-behavior: none;
   height: 100vh;
   display: flex;
   flex-wrap: wrap;
