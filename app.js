@@ -57,21 +57,18 @@ for (const ev of ["mousedown", "touchstart"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
     clickFlg = MOUSE_DOWN;
-    clearHint.innerHTML = clickFlg;
   });
 }
 for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
     clickFlg = MOUSE_UP;
-    clearHint.innerHTML = clickFlg;
   });
 }
 for (const ev of ["mousemove", "touchmove"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
-    clearHint.innerHTML = e.offsetX;
-    if (ev === "touchmove") {
+    if (!("offsetX" in e)) {
       e.offsetX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       e.offsetY = e.touches[0].pageY - e.touches[0].target.offsetTop;
     }
