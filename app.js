@@ -70,6 +70,10 @@ for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
 for (const ev of ["mousemove", "touchmove"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
+    if (ev === "touchmove") {
+      e.offsetX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+      e.offsetY = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    }
     if (clickFlg) {
       draw(e.offsetX, e.offsetY);
       clearHint.innerHTML = clickFlg + e.offsetX + "," + e.offsetY;
