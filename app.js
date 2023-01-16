@@ -57,12 +57,14 @@ for (const ev of ["mousedown", "touchstart"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
     clickFlg = MOUSE_DOWN;
+    clearHint.innerHTML = clickFlg;
   });
 }
 for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
     clickFlg = MOUSE_UP;
+    clearHint.innerHTML = clickFlg;
   });
 }
 for (const ev of ["mousemove", "touchmove"]) {
@@ -70,6 +72,7 @@ for (const ev of ["mousemove", "touchmove"]) {
     e.preventDefault();
     if (clickFlg) {
       draw(e.offsetX, e.offsetY);
+      clearHint.innerHTML = clickFlg + e.offsetX + "," + e.offsetY;
     }
   });
 }
