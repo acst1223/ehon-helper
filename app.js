@@ -53,6 +53,18 @@ function draw(x, y) {
   ctx.stroke();
 }
 
+cnvs.addEventListener("touchstart", function (e) {
+  e.preventDefault();
+});
+cnvs.addEventListener("touchmove", function (e) {
+  e.preventDefault();
+});
+cnvs.addEventListener("touchend", function (e) {
+  e.preventDefault();
+});
+cnvs.addEventListener("touchcancel", function (e) {
+  e.preventDefault();
+});
 cnvs.addEventListener("mousedown", (e) => {
   clickFlg = MOUSE_DOWN;
 });
