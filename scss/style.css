@@ -21,20 +21,20 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  row-gap: 1rem;
 }
 body canvas {
   border: solid 1px black;
   background-color: white;
+  margin-bottom: 1rem;
 }
 body div#tools {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
 }
 body div#tools div#bold-selection {
   display: flex;
   flex-wrap: wrap;
+  margin-right: 2rem;
 }
 body div#tools div#bold-selection div#bold-selection-hint {
   margin-right: 1.5rem;
@@ -42,12 +42,11 @@ body div#tools div#bold-selection div#bold-selection-hint {
 body div#tools div#bold-selection ul {
   list-style: none;
   display: flex;
-  -moz-column-gap: 1rem;
-       column-gap: 1rem;
 }
 body div#tools div#bold-selection ul li {
   cursor: pointer;
   transition: 0.3s;
+  padding: 0 0.5rem;
 }
 body div#tools div#bold-selection ul li.on {
   color: rgb(99, 48, 238);
