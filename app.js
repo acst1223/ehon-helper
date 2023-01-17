@@ -12,6 +12,7 @@ let boldSelectorList = document.querySelector(
 );
 let boldSelectors = boldSelectorList.querySelectorAll("li");
 let clearHint = document.querySelector("div#tools div#clear-hint");
+let saveHint = document.querySelector("div#tools div#save-hint");
 
 let currentPage = 1;
 let maxPage = 6;
@@ -184,10 +185,33 @@ for (const ev of ["mousemove", "touchmove"]) {
 clearHint.addEventListener("click", (e) => {
   ctx.clearRect(0, 0, cnvWidth, cnvHeight);
   setBgColor();
+  cnvRecord.clear();
+});
+
+saveHint.addEventListener("click", (e) => {
+  const { jsPDF } = window.jspdf;
+  let nowPage = currentPage;
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    hotfixes: ["px_scaling"],
+    format: [cnvWidth, cnvHeight],
+  });
+  flipPage(-999);
+  for (let i = 1; i <= maxPage; i++) {
+    let img = cnvs.toDataURL("image/png");
+    doc.addImage(img, "PNG", 0, 0, cnvWidth, cnvHeight);
+    if (i != maxPage) {
+      doc.addPage([cnvWidth, cnvHeight], "landscape");
+      flipPage(1);
+    }
+  }
+  flipPage(nowPage - maxPage);
+  doc.save("ehon.pdf");
 });
 
 function flipPage(offset) {
-  newPage = currentPage + offset;
+  let newPage = currentPage + offset;
   if (newPage <= 1) {
     newPage = 1;
     pageDownLabel.classList.add("disabled");

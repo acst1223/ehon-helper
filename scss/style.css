@@ -54,6 +54,10 @@ body div#tools div#bold-selection ul li.on {
 }
 body div#tools div#clear-hint {
   cursor: pointer;
+  margin-right: 2rem;
+}
+body div#tools div#save-hint {
+  cursor: pointer;
 }
 body div#pages {
   display: flex;
