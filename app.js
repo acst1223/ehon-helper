@@ -89,8 +89,8 @@ class CnvRecord {
           } else {
             ctx.lineTo(x, y);
           }
+          ctx.stroke();
         }
-        ctx.stroke();
       }
     }
   }
