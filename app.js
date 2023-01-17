@@ -85,6 +85,7 @@ class CnvRecord {
             y = s.points[i][1];
           if (i == 0) {
             ctx.lineCap = "round"; //　線を角丸にする
+            ctx.lineJoin = "round";
             ctx.moveTo(x, y);
           } else {
             ctx.lineTo(x, y);
@@ -131,6 +132,7 @@ function draw(x, y) {
     clickFlg = MOUSE_DRAGGING;
     ctx.beginPath();
     ctx.lineCap = "round"; //　線を角丸にする
+    ctx.lineJoin = "round";
     ctx.moveTo(x, y);
     cnvRecord.newEdge(x, y, cnvBold, color);
   } else {
