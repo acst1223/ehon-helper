@@ -30,6 +30,7 @@ body canvas {
 body div#tools {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 body div#tools div#bold-selection {
   display: flex;
@@ -53,6 +54,24 @@ body div#tools div#bold-selection ul li.on {
 }
 body div#tools div#clear-hint {
   cursor: pointer;
+}
+body div#pages {
+  display: flex;
+  flex-wrap: wrap;
+}
+body div#pages div {
+  padding: 0 1rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+body div#pages div.flip {
+  cursor: pointer;
+}
+body div#pages div.flip.disabled {
+  cursor: default;
+  color: rgb(165, 165, 165);
 }
 
 div.hint {

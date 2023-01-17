@@ -30,6 +30,7 @@ body {
   div#tools {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
 
     div#bold-selection {
       display: flex;
@@ -58,6 +59,25 @@ body {
 
     div#clear-hint {
       cursor: pointer;
+    }
+  }
+
+  div#pages {
+    display: flex;
+    flex-wrap: wrap;
+
+    div {
+      padding: 0 1rem;
+      user-select: none;
+
+      &.flip {
+        cursor: pointer;
+
+        &.disabled {
+          cursor: default;
+          color: rgb(165, 165, 165);
+        }
+      }
     }
   }
 }
