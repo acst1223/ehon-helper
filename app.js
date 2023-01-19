@@ -336,7 +336,7 @@ function r2d(r) {
 }
 
 /**
- * Random circle area
+ * Random circle logic
  */
 const CIRCLE_MIN_R = 12,
   CIRCLE_STD_R = 63,
