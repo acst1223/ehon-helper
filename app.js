@@ -501,3 +501,37 @@ function randomCircle() {
     return c;
   } // p >= 0.95 && p < 1
 }
+
+// https://stackoverflow.com/questions/6902334/how-to-let-javascript-wait-until-certain-event-happens
+function getPromiseFromEvent(item, event) {
+  return new Promise((resolve) => {
+    const listener = () => {
+      item.removeEventListener(event, listener);
+      resolve();
+    };
+    item.addEventListener(event, listener);
+  });
+}
+
+function getTimeoutPromiseFromEvent(item, event, timeLimit) {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    const listener = () => {
+      item.removeEventListener(event, listener);
+      resolve(Date.now() - startTime);
+    };
+    item.addEventListener(event, listener);
+    setTimeout(() => {
+      item.removeEventListener(event, listener);
+      resolve(Date.now() - startTime);
+    }, timeLimit);
+  });
+}
+
+async function waitForButtonClick() {
+  const label = document.querySelector("#cover");
+  label.innerText = "Waiting for you to press the button";
+  let t = await getTimeoutPromiseFromEvent(label, "click", 3000);
+  label.innerText = `The button was pressed after ${t} ms!`;
+}
+waitForButtonClick();
