@@ -20,12 +20,44 @@ let pageUpLabel = document.querySelector("#page-up");
 let pageDownLabel = document.querySelector("#page-down");
 let pageLabel = document.querySelector("#page");
 
+let cover = document.querySelector("#cover");
+let coverText = document.querySelector("#cover-text");
+
 let cnvWidth = cnvs.clientWidth,
   cnvHeight = cnvs.clientHeight;
 let clickFlg = MOUSE_UP;
 let cnvBold = 1;
 
 let touchStartX, touchStartY; // the start position when touched
+let locked = false; // global canvas lock
+
+// https://stackoverflow.com/questions/6902334/how-to-let-javascript-wait-until-certain-event-happens
+function getPromiseFromEvent(item, event) {
+  return new Promise((resolve) => {
+    const listener = (e) => {
+      e.stopPropagation();
+      item.removeEventListener(event, listener);
+      resolve();
+    };
+    item.addEventListener(event, listener);
+  });
+}
+
+function getTimeoutPromiseFromEvent(item, event, timeLimit) {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    const listener = (e) => {
+      e.stopPropagation();
+      item.removeEventListener(event, listener);
+      resolve(Date.now() - startTime);
+    };
+    item.addEventListener(event, listener);
+    setTimeout(() => {
+      item.removeEventListener(event, listener);
+      resolve(Date.now() - startTime);
+    }, timeLimit);
+  });
+}
 
 class CnvStroke {
   constructor(bold, color) {
@@ -36,6 +68,14 @@ class CnvStroke {
 
   push(x, y) {
     this.points.push([x, y]);
+  }
+
+  copy() {
+    const other = new CnvStroke(this.bold, this.color);
+    for (const p of this.points) {
+      other.push(p[0], p[1]);
+    }
+    return other;
   }
 }
 
@@ -180,11 +220,68 @@ class CnvRecord {
       this.duplicateY();
     }
   }
+
+  copy() {
+    const other = new CnvRecord();
+    for (const s of this.memory) {
+      other.memory.push(s.copy());
+    }
+    return other;
+  }
 }
 
-let cnvRecords = [];
+class Banners {
+  constructor(bannerArray) {
+    this.bannerArray = [...bannerArray];
+  }
+
+  async showOneBanner(idx) {
+    coverText.innerHTML = this.bannerArray[idx];
+    coverText.classList.add("show");
+    await getPromiseFromEvent(coverText, "animationend");
+    await getTimeoutPromiseFromEvent(cover, "click", 3000);
+    coverText.classList.add("hide");
+    coverText.classList.remove("show");
+    await getPromiseFromEvent(coverText, "animationend");
+    coverText.classList.remove("hide");
+  }
+
+  async showBanners() {
+    if (
+      cover.classList.contains("hide") ||
+      cover.classList.contains("hidden") ||
+      cover.classList.contains("none")
+    ) {
+      cover.classList.add("hidden");
+      cover.classList.remove("none");
+      cover.classList.add("show");
+      cover.classList.remove("hidden");
+      cover.classList.remove("hide");
+      await getPromiseFromEvent(cover, "animationend");
+    }
+    for (let i = 0; i < this.bannerArray.length; i++) {
+      await this.showOneBanner(i);
+    }
+    cover.classList.add("hide");
+    await getPromiseFromEvent(cover, "animationend");
+    cover.classList.remove("show");
+    cover.classList.add("none");
+    cover.classList.remove("hide");
+  }
+}
+
+const banners = new Banners([
+  "banner test 1",
+  "banner test 2",
+  "banner test 3",
+]);
+banners.showBanners();
+
+let cnvRecords = [],
+  cnvBackups = [];
 for (let i = 0; i <= maxPage; i++) {
   cnvRecords.push(new CnvRecord());
+  cnvBackups.push(new CnvRecord());
 }
 let cnvRecord = cnvRecords[currentPage];
 
@@ -230,6 +327,7 @@ function draw(x, y) {
 for (const ev of ["mousedown", "touchstart"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
+    if (locked) return;
     clickFlg = MOUSE_DOWN;
 
     if (e.type === "touchstart") {
@@ -241,6 +339,7 @@ for (const ev of ["mousedown", "touchstart"]) {
 for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
+    if (locked) return;
     if (clickFlg == MOUSE_DOWN) {
       if (!("offsetX" in e)) {
         e.offsetX = touchStartX;
@@ -259,6 +358,7 @@ for (const ev of ["mouseup", "touchend", "touchleave", "touchcancel"]) {
 for (const ev of ["mousemove", "touchmove"]) {
   cnvs.addEventListener(ev, (e) => {
     e.preventDefault();
+    if (locked) return;
     if (!("offsetX" in e)) {
       e.offsetX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       e.offsetY = e.touches[0].pageY - e.touches[0].target.offsetTop;
@@ -270,9 +370,11 @@ for (const ev of ["mousemove", "touchmove"]) {
 }
 
 clearHint.addEventListener("click", (e) => {
-  ctx.clearRect(0, 0, cnvWidth, cnvHeight);
-  setBgColor();
-  cnvRecord.clear();
+  if (locked) return;
+  // ctx.clearRect(0, 0, cnvWidth, cnvHeight);
+  cnvRecords[currentPage] = cnvBackups[currentPage].copy();
+  cnvRecord = cnvRecords[currentPage];
+  cnvRecord.restore();
 });
 
 saveHint.addEventListener("click", (e) => {
@@ -336,7 +438,7 @@ function r2d(r) {
 }
 
 /**
- * Random circle logic
+ * Random circle logic starts
  */
 const CIRCLE_MIN_R = 12,
   CIRCLE_STD_R = 63,
@@ -502,36 +604,16 @@ function randomCircle() {
   } // p >= 0.95 && p < 1
 }
 
-// https://stackoverflow.com/questions/6902334/how-to-let-javascript-wait-until-certain-event-happens
-function getPromiseFromEvent(item, event) {
-  return new Promise((resolve) => {
-    const listener = () => {
-      item.removeEventListener(event, listener);
-      resolve();
-    };
-    item.addEventListener(event, listener);
-  });
-}
+/**
+ * Random circle logic ends
+ */
 
-function getTimeoutPromiseFromEvent(item, event, timeLimit) {
-  return new Promise((resolve) => {
-    const startTime = Date.now();
-    const listener = () => {
-      item.removeEventListener(event, listener);
-      resolve(Date.now() - startTime);
-    };
-    item.addEventListener(event, listener);
-    setTimeout(() => {
-      item.removeEventListener(event, listener);
-      resolve(Date.now() - startTime);
-    }, timeLimit);
-  });
-}
-
+/*
 async function waitForButtonClick() {
-  const label = document.querySelector("#cover");
+  const label = document.querySelector("#cover-text");
   label.innerText = "Waiting for you to press the button";
   let t = await getTimeoutPromiseFromEvent(label, "click", 3000);
   label.innerText = `The button was pressed after ${t} ms!`;
 }
 waitForButtonClick();
+*/

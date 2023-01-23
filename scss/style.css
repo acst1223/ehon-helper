@@ -6,6 +6,39 @@
   font-weight: 200;
 }
 
+@-webkit-keyframes show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 html {
   scroll-behavior: smooth;
   -ms-scroll-chaining: none;
@@ -83,6 +116,39 @@ body div#cover {
   width: 100%;
   z-index: 1;
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body div#cover.show {
+  -webkit-animation: show 1s forwards;
+          animation: show 1s forwards;
+}
+body div#cover.hide {
+  -webkit-animation: hide 1s forwards;
+          animation: hide 1s forwards;
+}
+body div#cover.hidden {
+  opacity: 0;
+}
+body div#cover.none {
+  display: none;
+}
+body div#cover div#cover-text {
+  font-size: 3rem;
+  opacity: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+body div#cover div#cover-text.show {
+  -webkit-animation: show 0.3s forwards;
+          animation: show 0.3s forwards;
+}
+body div#cover div#cover-text.hide {
+  -webkit-animation: hide 0.3s forwards;
+          animation: hide 0.3s forwards;
 }
 
 div.hint {
