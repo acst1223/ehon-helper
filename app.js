@@ -6,6 +6,7 @@ let bgColor = "white";
 let color = "rgb(99, 48, 238)";
 
 let cnvs = document.getElementById("canvas");
+let scriptTextArea = document.getElementById("script");
 let ctx = cnvs.getContext("2d");
 let boldSelectorList = document.querySelector(
   "div#tools div#bold-selection ul"
@@ -272,8 +273,8 @@ class Banners {
 
 const banners = new Banners([
   "banner test 1",
-  "banner test 2",
-  "banner test 3",
+  // "banner test 2",
+  // "banner test 3",
 ]);
 banners.showBanners();
 
@@ -284,6 +285,10 @@ for (let i = 0; i <= maxPage; i++) {
   cnvBackups.push(new CnvRecord());
 }
 let cnvRecord = cnvRecords[currentPage];
+
+let ehonScripts = Array(maxPage + 1).fill("");
+ehonScripts[1] =
+  "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十";
 
 function initBoldSelector() {
   boldSelectors.forEach((s, i) => {
@@ -369,6 +374,10 @@ for (const ev of ["mousemove", "touchmove"]) {
   });
 }
 
+scriptTextArea.addEventListener("change", (e) => {
+  ehonScripts[currentPage] = scriptTextArea.value;
+});
+
 clearHint.addEventListener("click", (e) => {
   if (locked) return;
   // ctx.clearRect(0, 0, cnvWidth, cnvHeight);
@@ -380,18 +389,23 @@ clearHint.addEventListener("click", (e) => {
 saveHint.addEventListener("click", (e) => {
   const { jsPDF } = window.jspdf;
   let nowPage = currentPage;
+  let docHeight = cnvHeight + 30;
   const doc = new jsPDF({
     orientation: "landscape",
     unit: "px",
     hotfixes: ["px_scaling"],
-    format: [cnvWidth, cnvHeight],
+    format: [cnvWidth, docHeight],
   });
+  doc.addFont("SourceHanSansSC-VF.ttf", "HanSans", "normal");
+  doc.setFont("HanSans", "normal");
+  doc.setFontSize(15);
   flipPage(-999);
   for (let i = 1; i <= maxPage; i++) {
     let img = cnvs.toDataURL("image/png");
     doc.addImage(img, "PNG", 0, 0, cnvWidth, cnvHeight);
+    doc.text(ehonScripts[i], 10, cnvHeight + 22);
     if (i != maxPage) {
-      doc.addPage([cnvWidth, cnvHeight], "landscape");
+      doc.addPage([cnvWidth, docHeight], "landscape");
       flipPage(1);
     }
   }
@@ -416,6 +430,7 @@ function flipPage(offset) {
   pageLabel.innerHTML = String(newPage);
   cnvRecord = cnvRecords[newPage];
   cnvRecord.restore(ctx);
+  scriptTextArea.value = ehonScripts[newPage];
   currentPage = newPage;
 }
 

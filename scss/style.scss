@@ -45,10 +45,20 @@ body {
     margin-bottom: 1rem;
   }
 
+  input {
+    width: 600px;
+    border: solid 1px black;
+    margin-bottom: 1rem;
+    resize: none;
+    font-size: 1.27rem;
+    padding: 4px;
+  }
+
   div#tools {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    margin-top: 0.5rem;
 
     div#bold-selection {
       display: flex;

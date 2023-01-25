@@ -60,10 +60,19 @@ body canvas {
   background-color: white;
   margin-bottom: 1rem;
 }
+body input {
+  width: 600px;
+  border: solid 1px black;
+  margin-bottom: 1rem;
+  resize: none;
+  font-size: 1.27rem;
+  padding: 4px;
+}
 body div#tools {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 1rem;
+  margin-top: 0.5rem;
 }
 body div#tools div#bold-selection {
   display: flex;
