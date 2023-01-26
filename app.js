@@ -380,7 +380,7 @@ clearHint.addEventListener("click", (e) => {
   // ctx.clearRect(0, 0, cnvWidth, cnvHeight);
   cnvRecords[currentPage] = cnvBackups[currentPage].copy();
   cnvRecord = cnvRecords[currentPage];
-  cnvRecord.restore();
+  cnvRecord.restore(ctx);
 });
 
 async function initFont() {
@@ -670,24 +670,35 @@ class MainController {
 
   async birthdayIntro() {
     const banners = new Banners([
-      "banner test 1",
-      // "banner test 2",
-      // "banner test 3",
+      "Bju!",
+      "亲亲！！！！！！",
+      "虽然。。。",
+      "生日已经过了好多天了",
+      "不过我还是要祝Bju",
+      "生日快乐！！！",
+      "我爱Bju！！！",
+      "亲亲！！！！！！",
+      "Bju！",
+      "你有因为画不出绘本而失落的时候吗！",
+      "你想有更多的绘本灵感吗！！！",
+      "那么就试一试这个吧！",
+      "可以给你带来惊喜哦！",
     ]);
     await banners.showBanners();
   }
 
   async tutorialNormalIntro() {
-    const banners = new Banners([
-      "normal test 1",
-      // "banner test 2",
-      // "banner test 3",
-    ]);
+    const banners = new Banners(["我们开始吧！"]);
     await banners.showBanners();
   }
 
   async tutorialDrawingIntro() {
-    const banners = new Banners(["drawing test 1"]);
+    const banners = new Banners([
+      "这是一个圆，歪在一旁",
+      "看起来平平无奇，但它也可以是一切事物！",
+      "接下来想一想，这个圆可以发生怎样的变化吧！",
+      "设想3种可能，之后画在这里的3页上！",
+    ]);
     await banners.showBanners();
   }
 
@@ -700,7 +711,11 @@ class MainController {
   }
 
   async tutorialFixingIntro() {
-    const banners = new Banners(["fixing test 1"]);
+    const banners = new Banners([
+      "我们的AI也想了想，并且偷偷做了些恶作剧哦！",
+      "插进去一些页，又抽走了一些页。。。",
+      "现在绘本变成了6页，在这6页的基础上添油加醋吧！",
+    ]);
     await banners.showBanners();
   }
 
@@ -723,7 +738,7 @@ class MainController {
   }
 
   async tutorialScriptingIntro() {
-    const banners = new Banners(["scripting test 1"]);
+    const banners = new Banners(["最后，给绘本加上文字吧！"]);
     await banners.showBanners();
   }
 
