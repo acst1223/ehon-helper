@@ -98,8 +98,13 @@ body div#tools div#clear-hint {
   cursor: pointer;
   margin-right: 2rem;
 }
+body div#tools div#next-hint {
+  cursor: pointer;
+  color: rgb(62, 196, 91);
+}
 body div#tools div#save-hint {
   cursor: pointer;
+  color: rgb(218, 129, 20);
 }
 body div#pages {
   display: flex;
@@ -162,6 +167,9 @@ body div#cover div#cover-text.hide {
 
 div.hint {
   font-weight: 400;
+}
+div.hint.hidden {
+  display: none;
 }
 
 main {

@@ -1,3 +1,5 @@
+const { jsPDF } = window.jspdf;
+
 const MOUSE_UP = 0,
   MOUSE_DOWN = 1,
   MOUSE_DRAGGING = 2;
@@ -287,8 +289,6 @@ for (let i = 0; i <= maxPage; i++) {
 let cnvRecord = cnvRecords[currentPage];
 
 let ehonScripts = Array(maxPage + 1).fill("");
-ehonScripts[1] =
-  "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十";
 
 function initBoldSelector() {
   boldSelectors.forEach((s, i) => {
@@ -386,8 +386,19 @@ clearHint.addEventListener("click", (e) => {
   cnvRecord.restore();
 });
 
+async function initFont() {
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    hotfixes: ["px_scaling"],
+    format: [cnvWidth, docHeight],
+  });
+  doc.addFont("SourceHanSansSC-VF.ttf", "HanSans", "normal");
+  doc.setFont("HanSans", "normal");
+}
+initFont();
+
 saveHint.addEventListener("click", (e) => {
-  const { jsPDF } = window.jspdf;
   let nowPage = currentPage;
   let docHeight = cnvHeight + 30;
   const doc = new jsPDF({
