@@ -68,11 +68,17 @@ body input {
   font-size: 1.27rem;
   padding: 4px;
 }
+body input.hidden {
+  display: none;
+}
 body div#tools {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 1rem;
   margin-top: 0.5rem;
+}
+body div#tools.hidden {
+  display: none;
 }
 body div#tools div#bold-selection {
   display: flex;
@@ -109,6 +115,9 @@ body div#tools div#save-hint {
 body div#pages {
   display: flex;
   flex-wrap: wrap;
+}
+body div#pages.hidden {
+  display: none;
 }
 body div#pages div {
   padding: 0 1rem;

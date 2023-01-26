@@ -10,15 +10,19 @@ let color = "rgb(99, 48, 238)";
 let cnvs = document.getElementById("canvas");
 let scriptTextArea = document.getElementById("script");
 let ctx = cnvs.getContext("2d");
+
+let tools = document.querySelector("div#tools");
 let boldSelectorList = document.querySelector(
   "div#tools div#bold-selection ul"
 );
 let boldSelectors = boldSelectorList.querySelectorAll("li");
 let clearHint = document.querySelector("div#tools div#clear-hint");
 let saveHint = document.querySelector("div#tools div#save-hint");
+let nextHint = document.querySelector("div#tools div#next-hint");
 
 let currentPage = 1;
 let maxPage = 6;
+let pages = document.querySelector("#pages");
 let pageUpLabel = document.querySelector("#page-up");
 let pageDownLabel = document.querySelector("#page-down");
 let pageLabel = document.querySelector("#page");
@@ -273,13 +277,6 @@ class Banners {
   }
 }
 
-const banners = new Banners([
-  "banner test 1",
-  // "banner test 2",
-  // "banner test 3",
-]);
-banners.showBanners();
-
 let cnvRecords = [],
   cnvBackups = [];
 for (let i = 0; i <= maxPage; i++) {
@@ -387,6 +384,7 @@ clearHint.addEventListener("click", (e) => {
 });
 
 async function initFont() {
+  let docHeight = cnvHeight + 30;
   const doc = new jsPDF({
     orientation: "landscape",
     unit: "px",
@@ -643,3 +641,155 @@ async function waitForButtonClick() {
 }
 waitForButtonClick();
 */
+
+function sleep(interval) {
+  return new Promise((resolve) => setTimeout(resolve, interval));
+}
+
+// Array shuffle:　https://stackfame.com/5-ways-to-shuffle-an-array-using-moder-javascript-es6
+// using Array sort and Math.random
+const shuffleArr = (array) => array.sort(() => 0.5 - Math.random());
+
+class MainController {
+  constructor() {
+    let magic = prompt("请输入魔法咒语！");
+    if (magic === null) magic = "";
+    this.magic = magic;
+  }
+
+  tutorialIntro() {
+    scriptTextArea.classList.add("hidden");
+    tools.classList.add("hidden");
+    pages.classList.add("hidden");
+    locked = true;
+    const circleRecord = singleCircleLeft();
+    circleRecord.restore(ctx);
+    saveHint.classList.add("hidden");
+    nextHint.classList.remove("hidden");
+  }
+
+  async birthdayIntro() {
+    const banners = new Banners([
+      "banner test 1",
+      // "banner test 2",
+      // "banner test 3",
+    ]);
+    await banners.showBanners();
+  }
+
+  async tutorialNormalIntro() {
+    const banners = new Banners([
+      "normal test 1",
+      // "banner test 2",
+      // "banner test 3",
+    ]);
+    await banners.showBanners();
+  }
+
+  async tutorialDrawingIntro() {
+    const banners = new Banners(["drawing test 1"]);
+    await banners.showBanners();
+  }
+
+  tutorialDrawing() {
+    maxPage = 3;
+    tools.classList.remove("hidden");
+    pages.classList.remove("hidden");
+    cnvRecord.restore(ctx);
+    locked = false;
+  }
+
+  async tutorialFixingIntro() {
+    const banners = new Banners(["fixing test 1"]);
+    await banners.showBanners();
+  }
+
+  tutorialFixing() {
+    maxPage = 6;
+    let userRecords = cnvRecords.slice(1, 4);
+    shuffleArr(userRecords).pop();
+    for (let i = 0; i < 3; i++) userRecords.push(randomCircle());
+    shuffleArr(userRecords);
+    for (let i = 0; i < 5; i++) {
+      userRecords[i].randomReflect();
+    }
+    userRecords.unshift(singleCircleLeft());
+    userRecords.unshift(new CnvRecord());
+    cnvBackups = userRecords;
+    for (let i = 1; i <= 6; i++) {
+      cnvRecords[i] = cnvBackups[i].copy();
+    }
+    flipPage(-999);
+  }
+
+  async tutorialScriptingIntro() {
+    const banners = new Banners(["scripting test 1"]);
+    await banners.showBanners();
+  }
+
+  tutorialScripting() {
+    clearHint.classList.add("hidden");
+    nextHint.classList.add("hidden");
+    saveHint.classList.remove("hidden");
+    scriptTextArea.classList.remove("hidden");
+    locked = true;
+    flipPage(-999);
+  }
+
+  async startBirthday() {
+    this.tutorialIntro();
+    await this.birthdayIntro();
+    await sleep(1000);
+    this.tutorialDrawingIntro();
+    setTimeout(() => {
+      this.tutorialDrawing();
+    }, 1100);
+    await getPromiseFromEvent(nextHint, "click");
+    this.tutorialFixingIntro();
+    setTimeout(() => {
+      this.tutorialFixing();
+    }, 1100);
+    await getPromiseFromEvent(nextHint, "click");
+    this.tutorialScriptingIntro();
+    setTimeout(() => {
+      this.tutorialScripting();
+    }, 1100);
+  }
+
+  async startTutorial() {
+    this.tutorialIntro();
+    await this.tutorialNormalIntro();
+    await sleep(1000);
+    this.tutorialDrawingIntro();
+    setTimeout(() => {
+      this.tutorialDrawing();
+    }, 1100);
+    await getPromiseFromEvent(nextHint, "click");
+    this.tutorialFixingIntro();
+    setTimeout(() => {
+      this.tutorialFixing();
+    }, 1100);
+    await getPromiseFromEvent(nextHint, "click");
+    this.tutorialScriptingIntro();
+    setTimeout(() => {
+      this.tutorialScripting();
+    }, 1100);
+  }
+
+  async free() {
+    const banners = new Banners(["开始随心所欲地画画吧！"]);
+    await banners.showBanners();
+  }
+
+  async start() {
+    if (this.magic === "20230114") {
+      this.startBirthday();
+    } else if (this.magic === "helper") {
+      this.startTutorial();
+    } else {
+      this.free();
+    }
+  }
+}
+const mainController = new MainController();
+mainController.start();
